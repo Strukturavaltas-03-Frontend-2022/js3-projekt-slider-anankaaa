@@ -8,11 +8,33 @@ const navigationDots = document.querySelector(".navigationDots");
 const counter = document.querySelector(".counter")
 
 let numberOfImages = gallery.length;
-let slideWidth = 0;
 let currentSlide = 0;
 
 let stepTime = 4000;
 let imageID = 0;
+
+const setActiveClass = () => {
+
+  let currentActive = document.querySelector(".slideImage.active");
+  currentActive.classList.remove("active");
+  currentActive.style.display = 'none'
+  slidesContainer.children[currentSlide].classList.add("active");
+  slidesContainer.children[currentSlide].style.display = 'block'
+
+  let currentDot = document.querySelector(".singleDot.active");
+  currentDot.classList.remove("active");
+  navigationDots.children[currentSlide].classList.add("active");
+}
+
+const setCounter = () => {
+  counter.innerHTML = `${currentSlide+1} / ${gallery.length}` 
+}
+
+const goToSlide = (slideNumber) => {
+  currentSlide = slideNumber;
+  setActiveClass();
+  setCounter();
+}
 
 const init = () => {
   gallery.forEach((item, idx) => {
@@ -27,15 +49,19 @@ const init = () => {
     caption.innerText = item.caption
     div.appendChild(caption)
     slideImage.push(div)
+    if (idx != 0) {
+      div.style.display = "none";
+    } 
     slidesContainer.appendChild(div);
   });
   slidesContainer.children[0].classList.add("active");
-  slideWidth = 700; 
 
   createNavigationDots();
+  setCounter();
 }
 
 init();
+
 
 function createNavigationDots() {
   for (let i = 0; i < numberOfImages; i++) {
@@ -73,27 +99,8 @@ prevBtn.addEventListener("click", () => {
   goToSlide(currentSlide);
 });
 
-
-const goToSlide = (slideNumber) => {
-  currentSlide = slideNumber;
-  setActiveClass();
-}
-
-
-const setActiveClass = () => {
-
-  let currentActive = document.querySelector(".slideImage.active");
-  currentActive.classList.remove("active");
-  currentActive.style.display = 'none'
-  slidesContainer.children[currentSlide].classList.add("active");
-  slidesContainer.children[currentSlide].style.display = 'block'
-
-  let currentDot = document.querySelector(".singleDot.active");
-  currentDot.classList.remove("active");
-  navigationDots.children[currentSlide].classList.add("active");
-}
-
 setInterval(() => {
+  console.log(imageID)
   imageID === 2 ? (imageID = 0) : imageID++;
   goToSlide(imageID);
 }, stepTime);
